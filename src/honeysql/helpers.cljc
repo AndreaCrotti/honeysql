@@ -104,6 +104,14 @@
                         [logic-op (:where m) pred]
                         pred)))))
 
+(declare left-join)
+
+(defn left-join-exclude
+  [m id-field clauses]
+  (-> m
+      (left-join clauses)
+      (merge-where [:= id-field nil])))
+
 (macros/usetime
  (defhelper join [m clauses]
    (assoc m :join clauses)))
@@ -111,6 +119,10 @@
 (macros/usetime
  (defhelper merge-join [m clauses]
    (update-in m [:join] concat clauses)))
+
+(macros/usetime
+ (defhelper left-join-exclude [m [id-field clauses]]
+   (left-join-exclude m id-field clauses)))
 
 (macros/usetime
  (defhelper left-join [m clauses]
